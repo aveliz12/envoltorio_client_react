@@ -1,53 +1,95 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
+import { casoPrueba1, casoPrueba2 } from "../Services/TestCases";
+import { getToken } from "../Services/ApiRest";
 
 const Home = () => {
-  //Variables
-  const urlToken = "https://id.twitch.tv/oauth2/token";
-  const params = new URLSearchParams();
-  params.append("client_id", "a2bf4j1rhkytvzoc4ortzn7m4yxg33");
-  params.append("client_secret", "ri98723b3c639ub3zgltykc2znqicu");
-  params.append("grant_type", "client_credentials");
+  const [token, setToken] = useState('');
 
-  //Funcion Obtener token
-  const getToken = async () => {
-    const response = await fetch(urlToken, {
-      method: "POST",
-      body: params,
-    });
+  const [casos, setCasosPrueba] = useState('caso1');
 
-    const data = await response.json();
-    localStorage.setItem("token", data.access_token);
-    console.log(data);
-  };
+  const [formData, setFormData] = useState({
+    id: '',
+  });
 
-  //Funcion obtener LiveStreams
-  const getLiveStreams = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("https://api.twitch.tv/helix/streams", {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Client-Id": "a2bf4j1rhkytvzoc4ortzn7m4yxg33",
-        },
-      });
-      const dataLiveStreams = await response.json();
-      console.log(dataLiveStreams.data);
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+    console.log(window.location.href);
+    if (window.location.href.split("#").length > 1) {
+      setToken(window.location.href.split("#")[1].split("&")[0].split("=")[1]);
+    }
+  }, []);
+
+  const casosPrueba = async () => {
+    if (token === "") {
+      alert("Genere un token");
+      return;
+    }
+
+    switch (casos) {
+      case "caso1":
+        try {
+          const caso1 = await casoPrueba1();
+          return caso1;
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      case "caso2":
+        try {
+          const caso2 = await casoPrueba2(formData.id);
+          return caso2;
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      default:
+        break;
     }
   };
 
   return (
     <Fragment>
       <div>
-        <button className="btn btn-primary" onClick={getToken}>
-          Generar Token
+        {token === "" ? <p>Genere un token por favor</p> : <p>{token}</p>}
+        <button
+          className="btn btn-primary"
+          onClick={async (data) => {
+            data = await getToken();
+            setToken(data.access_token);
+          }}
+        >
+          GENERAR TOKEN
         </button>
         <br />
+        <h2>CASOS DE PRUEBA</h2>
+
         <br />
-        <button className="btn btn-secondary" onClick={getLiveStreams}>
-          Obtener LiveStreams
+        <select
+          name="select"
+          onChange={(event) => {
+            setCasosPrueba(event.target.value);
+          }}
+        >
+          <option value="caso1">1° Endpoint</option>
+          <option value="caso2">2° Endpoint</option>
+        </select>
+        <br />
+        <label>
+          Si desea obtener los videos del juego ingrese Id del Juego
+        </label>
+        <input
+          type="text"
+          onChange={(event) => {
+            setFormData({ ...formData, id: event.target.value });
+          }}
+        />
+        <br />
+        <button
+          className="btn btn-secondary"
+          onClick={() => {
+            casosPrueba();
+          }}
+        >
+          OBTENER
         </button>
       </div>
     </Fragment>
