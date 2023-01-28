@@ -17,7 +17,6 @@ export const getToken = async () => {
 
   const data = await response.json();
   localStorage.setItem("token", data.access_token);
-  console.log(data);
   return data;
 };
 
@@ -33,7 +32,6 @@ export const getLiveStreams = async () => {
       },
     });
     const dataLiveStreams = await response.json();
-    //console.log(dataLiveStreams.data);
     return dataLiveStreams.data;
   } catch (error) {
     console.log(error);
@@ -47,13 +45,73 @@ export const getVideosByGame = async (id) => {
     const response = await fetch(`${url}videos?game_id=${id}`, {
       method: "GET",
       headers: {
-        Authorization: "Bearer" + token,
+        Authorization: "Bearer " + token,
         "Client-Id": "a2bf4j1rhkytvzoc4ortzn7m4yxg33",
+        "accept-language": "",
+      },
+    });
+    const dataVideosByGame = await response.json();
+    return dataVideosByGame.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//Funcion para extraer Informacion del canal
+export const getInformationChannel = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${url}channels?broadcaster_id=${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Client-Id": "a2bf4j1rhkytvzoc4ortzn7m4yxg33",
+        "accept-language": "",
       },
     });
 
-    const dataVideosByGame = await response.json();
-    return dataVideosByGame;
+    const dataInformationChannel = await response.json();
+    return dataInformationChannel;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//Funcion para extraer clips por usuario
+export const getClipsByUser = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${url}clips?broadcaster_id=${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Client-Id": "a2bf4j1rhkytvzoc4ortzn7m4yxg33",
+        "accept-language": "",
+      },
+    });
+
+    const dataClipsByUser = await response.json();
+    return dataClipsByUser;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//Funcion para extraer la informacion del juego
+export const getInformationGame = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${url}games?id=${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Client-Id": "a2bf4j1rhkytvzoc4ortzn7m4yxg33",
+        "accept-language": "",
+      },
+    });
+
+    const dataInformationGame = await response.json();
+    return dataInformationGame;
   } catch (error) {
     console.log(error);
   }

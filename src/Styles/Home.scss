@@ -1,0 +1,35 @@
+.container {
+  p {
+    font-weight: bold;
+  }
+
+  .buttonToken {
+    display: flex;
+    justify-content: center;
+    .btnToken {
+      background-color: rgb(144, 70, 255);
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+
+    .btnToken:hover {
+      background-color: rgb(85, 28, 170);
+    }
+  }
+
+  .buttonGet {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    .btnConsulta {
+      background-color: rgb(101, 9, 187);
+      border: none;
+      width: 100%;
+    }
+
+    .btnConsulta:hover {
+      background-color: rgb(152, 98, 233);
+    }
+  }
+}
